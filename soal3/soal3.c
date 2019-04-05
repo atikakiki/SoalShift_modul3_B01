@@ -92,10 +92,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    while(1){
-        if (spirit_status <= 0 || wakeUp_status >= 100)
-            break;
-            
+    while(spirit_status > 0 && wakeUp_status < 100){            
         menu();
         scanf("%d", &input);
 
