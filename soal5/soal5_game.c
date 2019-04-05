@@ -82,8 +82,10 @@ void keyHandler(){
                     sleep(0.3);
                 }
                 else{
+                    printf("\nOm nom nom..\n");
                     hunger_pt += 15;
                     fridge--;
+                    sleep(0.2);
                 }
                 break;
             //bath
@@ -93,8 +95,10 @@ void keyHandler(){
                     sleep(0.3);
                 }
                 else{
+                    printf("\nBathing %s..\n", name);
                     hygiene_pt += 30;
                     bathtimeout = 20;
+                    sleep(0.2);
                 }
                 break;
             //enter the arena
@@ -259,7 +263,7 @@ int main(){
     createThread(menuhdlr, reg, hgr, hyg);
     game_stat = 1;
 
-    //start keyboard handler
+    //start keyboard handler on main program
     while(game_stat)
         keyHandler();
 
