@@ -10,7 +10,7 @@
 #include <pthread.h> //library thread
 #define SHM_KEY 7777
 
-char name[45];
+char name[80];
 
 /* status */
 int pet_hp = 300,
@@ -36,11 +36,14 @@ int kbhit(){
 
 //display menu
 void *menu(){
+    //block until game is started
     while(!game_stat);
     sce[0] = 1;
 
     while(game_stat){
+        //clear screen
         system("clear");
+        
         if(sce[0]){
             printf("========Standby Mode========\nHealth : %d\nHunger : %d\nHygiene : %d\nFood left : %d\n", pet_hp, hunger_pt, hygiene_pt, fridge);
             if(bathtimeout > 0)
@@ -76,6 +79,7 @@ void keyHandler(){
             case '1':
                 if(fridge == 0){
                     printf("\nYou have no food left!\n");
+                    sleep(0.3);
                 }
                 else{
                     hunger_pt += 15;
@@ -104,6 +108,7 @@ void keyHandler(){
                 sce[0] = 0;
                 sce[2] = 1;
                 break;
+            //exit
             case '5':
                 exit(EXIT_SUCCESS);
                 break;
@@ -169,41 +174,36 @@ void keyHandler(){
 
 //hunger --sce[1]
 void *hunger(){
-    while(!sce[0]);
-
     while(game_stat){
         while(!sce[0]);
-
+        
+        sleep(10);
+        
         hunger_pt -= 5;
         //game over
         if(hunger_pt <= 0)
             game_stat = 0;
-        sleep(10);
     }
 }
 
 void *hygiene(){
-    while(!sce[0]);
-
     while(game_stat){
         while(!sce[0]);
-
+        
+        sleep(30);
+        
         hygiene_pt -= 10;
         //game over
         if(hygiene_pt <= 0)
             game_stat = 0;
-        sleep(30);
     }
 }
 
 void *hpregen(){
-    while(!sce[0]);
-
     while(game_stat){
         while(!sce[0]);
-
-        pet_hp += 5;
         sleep(10);
+        pet_hp += 5;
     }
 }
 
@@ -234,6 +234,10 @@ void createThread(pthread_t menuhdlr, pthread_t reg, pthread_t hgr, pthread_t hy
     }
 }
 
+//  void battle(){
+//
+//  }
+
 int main(){
     pthread_t menuhdlr, reg, hgr, hyg;
 
@@ -252,7 +256,6 @@ int main(){
     tcsetattr(0, TCSANOW, &info);
    
     //start on standby
-    sce[0] = 0;
     createThread(menuhdlr, reg, hgr, hyg);
     game_stat = 1;
 
@@ -272,10 +275,11 @@ int main(){
             printf("fatal injury\n");
     }
     
-
+    //set the terminal back into canonical mode
     tcgetattr(0, &info);
     info.c_lflag |= ICANON;
     tcsetattr(0, TCSANOW, &info);
+    
     exit(EXIT_SUCCESS);
 }
 
