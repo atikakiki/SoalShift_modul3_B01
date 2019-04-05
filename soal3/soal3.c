@@ -39,6 +39,11 @@ void *wakes(){
             wakeUp_status += 15;
             count[0]++;
         }
+        if(wakeUp_status >= 100){
+            //displayStat();
+            printf("Agmal Terbangun, mereka bangun pagi dan berolahraga\n");
+            pthread_exit(0);
+        }
         stat[0] = 0;
     }
 }
@@ -57,6 +62,11 @@ void *sleeps(){
         else{
             spirit_status -= 20;
             count[1]++;
+        }
+        if (spirit_status <= 0){
+            //displayStat();
+            printf("Iraj ikut tidur, dan bangun kesiangan bersama Agmal\n");
+            pthread_exit(0);
         }
         stat[1] = 0;
     }
@@ -83,17 +93,9 @@ int main()
     }
 
     while(1){
-        if(wakeUp_status >= 100){
-            //displayStat();
-            printf("Agmal Terbangun, mereka bangun pagi dan berolahraga\n");
+        if (spirit_status <= 0 || wakeUp_status >= 100)
             break;
-        }
-        else if (spirit_status <= 0 ){
-            //displayStat();
-            printf("Iraj ikut tidur, dan bangun kesiangan bersama Agmal\n");
-            break;
-        }
-
+            
         menu();
         scanf("%d", &input);
 
