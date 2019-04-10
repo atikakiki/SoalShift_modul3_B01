@@ -17,7 +17,7 @@ int pet_hp = 300,
     enemy_hp = 100,
     hunger_pt = 200,
     hygiene_pt = 100,
-    fridge = 0,
+    fridge = 1,
     *shop_stock = NULL;
 
 //--sce[0] = idle, sce[1] = battle, sce[2] = shop
@@ -64,6 +64,16 @@ void *menu(){
         bathtimeout--;
         sleep(1);
     }
+
+    system("clear");
+    printf("======GAME OVER======\nYour %s has died from ", name);
+
+    if(hunger_pt <= 0)
+        printf("malnutrition\n");
+    else if(hygiene_pt <= 0)
+        printf("illness\n");
+    else if(pet_hp <= 0)
+        printf("fatal injury\n");
 }
 
 //keyboard handler
@@ -83,7 +93,10 @@ void keyHandler(){
                 }
                 else{
                     printf("\nOm nom nom..\n");
-                    hunger_pt += 15;
+                    if(hunger_pt >= 185)
+                        hunger_pt = 200;
+                    else
+                        hunger_pt += 15;
                     fridge--;
                     sleep(0.2);
                 }
@@ -176,14 +189,18 @@ void keyHandler(){
     }
 }
 
-//hunger --sce[1]
+//hunger 
 void *hunger(){
+    while(!sce[0]);
+
     while(game_stat){
         while(!sce[0]);
         
         sleep(10);
-        
-        hunger_pt -= 5;
+
+        if(sce[0])
+            hunger_pt -= 5;
+
         //game over
         if(hunger_pt <= 0)
             game_stat = 0;
@@ -191,12 +208,16 @@ void *hunger(){
 }
 
 void *hygiene(){
+    while(!sce[0]);
+
     while(game_stat){
         while(!sce[0]);
         
         sleep(30);
-        
-        hygiene_pt -= 10;
+
+        if(sce[0])
+            hygiene_pt -= 10;
+
         //game over
         if(hygiene_pt <= 0)
             game_stat = 0;
@@ -204,10 +225,15 @@ void *hygiene(){
 }
 
 void *hpregen(){
+    while(!sce[0]);
+
     while(game_stat){
         while(!sce[0]);
+        
         sleep(10);
-        pet_hp += 5;
+
+        if(sce[0])
+            pet_hp += 5;
     }
 }
 
@@ -266,18 +292,6 @@ int main(){
     //start keyboard handler on main program
     while(game_stat)
         keyHandler();
-
-    if(!game_stat){
-        system("clear");
-        printf("======GAME OVER======\nYour %s has died from ", name);
-
-        if(hunger_pt <= 0)
-            printf("malnutrition\n");
-        else if(hygiene_pt <= 0)
-            printf("illness\n");
-        else if(pet_hp <= 0)
-            printf("fatal injury\n");
-    }
     
     //set the terminal back into canonical mode
     tcgetattr(0, &info);

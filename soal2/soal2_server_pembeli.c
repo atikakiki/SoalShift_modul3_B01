@@ -10,7 +10,7 @@
 #include <pthread.h>
 #define PORT_JUAL 7777
 #define PORT_BELI 8888
-#define SHM_KEY 420420
+#define SHM_KEY 5600
 
 int *stock;
 int conn_count=0;
@@ -38,7 +38,7 @@ void *server_handler(void* fd_ptr){
         // write(socket, client_msg, strlen(client_msg));
 
         if(strcmp(client_msg, "beli") == 0){
-            if(stock > 0){
+            if(*stock > 0){
                 *stock = *stock - 1;
 
                 strcpy(serv_msg, "Transaksi berhasil\n");   
@@ -67,7 +67,7 @@ void *server_handler(void* fd_ptr){
 
     free(fd_ptr);
     close(socket);
-    pthread_exit(0);
+    //pthread_exit(0);
 }
 
 void *disp_stock(){

@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #define PORT_JUAL 7777
-#define SHM_KEY 420420
+#define SHM_KEY 5600
 
 int *stock;
 int conn_count=0;
